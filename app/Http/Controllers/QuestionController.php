@@ -17,6 +17,10 @@ class QuestionController extends Controller
    {
     return view('questions.create-form');
    }
+   public function store(Request $request)
+   {
+     return $request->all();
+   }
    public function show($id)
    {
       return "<h1>$id</h1>";
