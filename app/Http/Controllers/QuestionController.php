@@ -13,9 +13,12 @@ class QuestionController extends Controller
         $questions=Question::latest()->paginate(4);
         return view('questions.index',compact('questions'));
     }
-
-    public function show($id)
-    {
+    public function create()
+   {
+    return view('questions.create-form');
+   }
+   public function show($id)
+   {
       return "<h1>$id</h1>";
-    }
+   }
 }
