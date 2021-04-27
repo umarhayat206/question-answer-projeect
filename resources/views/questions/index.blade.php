@@ -65,7 +65,7 @@
                 </div>
 
                 <div class="card-body">
-                   
+                   @include('layouts._messages')
 
                    @foreach($questions as $question)
                       <div class="media">
@@ -74,7 +74,7 @@
                                <strong>{{$question->votes}}</strong>{{str_plural('vote',$question->votes)}}
                             </div>
                             <div class=" {{$question->status}}">
-                                <strong>{{$question->answers}}</strong>{{str_plural('answer',$question->answers)}}
+                                <strong>{{$question->answers_count}}</strong>{{str_plural('answer',$question->answers_count)}}
                              </div>
                              <div class="view">
                                 {{$question->views ."  ". str_plural('view',$question->views)}}
@@ -83,7 +83,21 @@
                         </div>
 
                        <div class="media-body">
-                       <a href="{{$question->url}}"><h3 class="mt-0">{{$question->title}}</h3></a>
+                         <div class="d-flex align-items-center">
+                         <a href="{{$question->url}}"><h3 class="mt-0">{{$question->title}}</h3></a>
+                            <div class="ml-auto">
+                             @can('update',$question)
+                             {{-- @if(Auth::user()->can('update-question',$question)) --}}
+                             <a href="{{route('question.edit',$question->id)}}"class="btn btn-sm btn-outline-info">Edit</a>
+                             {{-- @endif --}}
+                             @endcan
+                             @can('delete',$question)
+                             {{-- @if(Auth::user()->can('delete-question',$question)) --}}
+                             <a href="{{route('question.delete',$question->id)}}" class="btn btn-sm btn-outline-danger"> Delete</a>
+                             {{-- @endif --}}
+                             @endcan
+                            </div>
+                         </div>
                        <p class="lead">
                          Asked by <a href="{{$question->user->url}}">{{$question->user->name}}</a>
                          <small class="text-muted">{{$question->created_date}}</small>

@@ -42,12 +42,24 @@ class User extends Authenticatable
         return $this->hasMany('App\Question');
     
     }
+    public function answers()
+    {
+        return $this->hasMany('App\Answer');
+    }
     
     public function getUrlAttribute()
     {
         //return route('question.show',$this->id);
 
         return '#';
+
+    }
+    public function getAvatarAttribute()
+    {
+        $email = "someone@somewhere.com";
+       
+        $size = 25;
+        return  "https://www.gravatar.com/avatar/" . md5( strtolower( trim( $email ) ) ) .  "&s=" . $size;
 
     }
 }

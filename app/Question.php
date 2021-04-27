@@ -20,7 +20,8 @@ class Question extends Model
     }
     public function getUrlAttribute()
     {
-        return route('question.show',$this->id);
+        
+        return route('question.show',$this->slug);
 
     }
     public function getCreatedDateAttribute()
@@ -29,7 +30,7 @@ class Question extends Model
     }
     public function getstatusAttribute()
     {
-        if($this->answers>0)
+        if($this->answers_count>0)
         {
             if($this->best_answer_id)
             {
@@ -38,6 +39,10 @@ class Question extends Model
             return "answered";
         }
         return "unanswered";
+    }
+    public function answers()
+    {
+        return $this->hasMany('App\Answer');
     }
 
 }

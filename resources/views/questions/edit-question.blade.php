@@ -6,7 +6,7 @@
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center">
-                        <h2>Ask Questions</h2>
+                        <h2>Edit  Questions</h2>
                         <div class="ml-auto">
                            <a href="{{route('questionhome')}}" class="btn btn-outline-secondary">Back To All Questions</a>
                         </div>
@@ -17,11 +17,11 @@
 
                 <div class="card-body">
                    
-               <form action="{{url('/store')}}" method="POST">
+               <form action="{{route('question.update',$question->id)}}" method="POST">
                @csrf
                 <div class="form-group">
                     <label>Question Title</label>
-                    <input type="text" name="title" id="question-title" value="{{old('title')}}" class="form-control {{$errors->has('title')?'is-invalid':''}}">
+                    <input type="text" name="title" id="question-title" value="{{$question->title}}" class="form-control {{$errors->has('title')?'is-invalid':''}}">
                     @if($errors->has('title'))
                     <div class="invalid-feedback">
                         <strong>{{$errors->first('title')}}</strong>
@@ -31,7 +31,7 @@
                 <div class="form-group">
                     <label>Explain your question</label>
                     <textarea name="body" id="question-body" class="form-control {{$errors->has('body')?'is-invalid':''}}" rows="10">
-                     {{old('body')}}
+                     {{$question->body}}
                     </textarea>
                     @if($errors->has('body'))
                     <div class="invalid-feedback">
