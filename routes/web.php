@@ -11,6 +11,11 @@
 |composer require laravel/ui
 |php artisan ui bootstarp --auth
 |composer self-update --2
+|step 2 – Database Configuration  Step 3 – Install Laravel UI  composer require laravel/ui
+|Step 4 – Install Bootstrap Auth Scaffolding php artisan ui bootstrap --auth|
+|Step 5 – Install Npm Packages npm install  npm run dev
+|Step 6 – Run php artisan Migrate
+|
 */
 
 Route::get('/', function () {
