@@ -10,6 +10,7 @@
 | contains the "web" middleware group. Now create something great!
 |composer require laravel/ui
 |php artisan ui bootstarp --auth
+|composer self-update --2
 */
 
 Route::get('/', function () {
