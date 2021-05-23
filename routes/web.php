@@ -15,7 +15,7 @@
 |Step 4 – Install Bootstrap Auth Scaffolding php artisan ui bootstrap --auth|
 |Step 5 – Install Npm Packages npm install  npm run dev
 |Step 6 – Run php artisan Migrate
-|
+|this line is for once db error php artisan config:cache
 */
 
 Route::get('/', function () {
