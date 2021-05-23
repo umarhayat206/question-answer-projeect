@@ -16,6 +16,7 @@
 |Step 5 – Install Npm Packages npm install  npm run dev
 |Step 6 – Run php artisan Migrate
 |this line is for once db error php artisan config:cache
+|https://stackoverflow.com/questions/39767619/menu-filter-permission-with-laratrust
 */
 
 Route::get('/', function () {
