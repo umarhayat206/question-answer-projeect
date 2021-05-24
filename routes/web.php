@@ -18,6 +18,21 @@
 |this line is for once db error php artisan config:cache
 |https://stackoverflow.com/questions/39767619/menu-filter-permission-with-laratrust
 |https://github.com/shamscorner/tinymce-laravel
+|
+|To display different roles of users 
+|@foreach ($roles as $role)
+|        <input type="checkbox" value="{{$role->id}}" name="{{$role->name}}" 
+|       @if(auth()->check()) 
+|            @foreach(auth()->user()->roles as $userRole)
+|                 @if($userRole->id==$role->id) {{"checked"}}
+|                 @endif
+|             @endforeach
+|       @endif> {{$role->name}}</input>
+|   @endforeach
+|
+|
+|
+
 */
 
 Route::get('/', function () {
