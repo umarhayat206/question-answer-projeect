@@ -17,6 +17,7 @@
 |Step 6 – Run php artisan Migrate
 |this line is for once db error php artisan config:cache
 |https://stackoverflow.com/questions/39767619/menu-filter-permission-with-laratrust
+|https://github.com/shamscorner/tinymce-laravel
 */
 
 Route::get('/', function () {
