@@ -30,8 +30,31 @@
 |       @endif> {{$role->name}}</input>
 |   @endforeach
 |
+|Menu configuration of admin lte
+|https://stackoverflow.com/questions/39760922/admin-lte-with-laratrust
+|
+|and code is here
+|class MyMenuFilter implements FilterInterface
+|
+|   public function transform($item)
+|    {
+|       if (isset($item['permission']) && !Laratrust::isAbleTo($item['permission'])) {
+|            return false;
+|       }
+|        return $item;
+|   }
+|    }
+|and in adminlte.php menu is 
+|     [
+|            'text' => 'All Categories',
+|            'url'  => '/admin/categories',
+|            'permission'=>'can_view_categories'
 |
 |
+|   //            'icon' => 'fas fa-fw fa-user',
+|        ],
+|
+
 
 */
 
