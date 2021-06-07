@@ -54,7 +54,225 @@
 |   //            'icon' => 'fas fa-fw fa-user',
 |        ],
 |
+      // User controller
+       public function index()
+   {
 
+        //return $clients;
+        $users = User::paginate(5);
+        $data= ['users'=>$users];
+        return view('admin.users.index', $data);
+    }
+
+    public function create()
+    {
+        $roles = Role::all();
+        $data['roles'] = $roles;
+        return view('admin.users.CreateUser', $data);
+    }
+
+    public function store(UserRequest $request)
+    {
+
+            $user = new User();
+            $user->name = $request->name;
+            $user->email = $request->email;
+            $user->password = Hash::make($request->password);
+            $user->save();
+            $roles = $request->role;
+            for ($i = 0; $i < count($roles); $i++) {
+                $role = Role::find($roles[$i]);
+                $user->attachRole($role);
+                //echo $role->id."<br>";
+            }
+
+       return redirect()->route('admin.users.index')->with('success', 'User is saved successfully');
+        //        before code
+//        $role = Role::where('id', $request->role)->first();
+//        $user = new User();
+//        $user->name = $request->name;
+//        $user->email = $request->email;
+//        $user->password = Hash::make($request->password);
+        //$user->fill($request->all());
+//        $user->save();
+//        $user->attachRole($role);
+//
+    }
+
+    public function edit($id)
+    {
+        $roles = Role::all();
+        $user = User::findOrFail($id);
+        $rolesIds = $user->roles->pluck('id')->toArray();
+        $data = ['user' => $user, 'roles' => $roles, 'rolesIds'=>$rolesIds];
+        return view('admin.users.EditUser', $data);
+    }
+
+    public function update(EditUserRequest $request, $id)
+    {
+
+        $password = $request->input('password', null);
+        $request->request->remove('password');
+        $user = User::findOrFail($id);
+        $user->detachRoles($user->roles);
+        $roles = $request->role;
+        for ($i = 0; $i < count($roles); $i++) {
+            $role = Role::find($roles[$i]);
+            $user->attachRole($role);
+
+        }
+        $user->fill($request->all());
+        if(!empty($password))
+        {
+            $user->password = Hash::make($password);
+        }
+        $user->save();
+        return redirect()->route('admin.users.index')->with('success', 'User is saved successfully');
+
+
+    }
+    public function delete($id)
+    {
+        $currentUser = Auth::user();
+        $user = User::findOrFail($id);
+
+        if ($currentUser->id != $user->id) {
+            $user->delete();
+
+            return redirect()->route('admin.users.index')->with('success', 'User is deleted successfully');
+        }
+
+        return back()->with('error','You cannot delete yourself');
+    }
+    public function show($id)
+    {
+
+        $user = User::findOrFail($id);
+        $data['user']=$user;
+        return view('admin.users.ShowUser',$data);
+
+    }
+    
+    
+    //posts controller
+    
+    public function index()
+    {
+        if (Auth::user()->hasRole(['super_admin', 'admin'])) {
+            $posts = Post::latest()->paginate(5);
+            $data = ['posts' => $posts];
+            return view('admin.post.index', $data);
+        } else {
+            $userId = Auth::user()->id;
+            $posts = Post::where('user_id', '=', $userId)->paginate(5);
+            $data = ['posts' => $posts];
+            return view('admin.post.index', $data);
+
+        }
+
+
+    }
+
+    public function show($slug)
+    {
+
+        $categories = Category::all();
+        $post = Post::where('slug', $slug)->first();
+        $data =['post'=>$post,'categories'=>$categories];
+        if (!empty($post)) {
+            return view('Posts.showpost', $data);
+        } else {
+            return view('errors.404');
+        }
+    }
+    public function showByCategory($id)
+    {
+
+        $categories = Category::all();
+        $posts = Post::where('category_id','=', $id)->paginate(8);
+        $category=$id;
+        $data =['posts'=>$posts,'categories'=>$categories];
+        return view('Posts.showByCategory',$data);
+
+    }
+
+    public function create()
+    {
+        $authors = User::whereHas('roles', function ($role) {
+            $role->where('name', '=', 'author');
+        })->get();
+        $categories = Category::all();
+        $data = ['categories' => $categories, 'authors' => $authors];
+        return view('admin.post.CreatePost', $data);
+    }
+
+    public function store(StorePostRequest $request)
+    {
+        $post = new Post();
+        $post->fill($request->all());
+        $post->category_id = $request->category;
+        if ($imagefile = $request->file('image')) {
+            $name = time() . $imagefile->getClientOriginalName();
+            $imagefile->move('images', $name);
+            $post->image = $name;
+        }
+        $post->user_id = $request->author;
+        $post->save();
+        return redirect()->route('admin.posts.index')->with('success', 'Post is saved successfully');
+
+    }
+
+    public function edit($id)
+    {
+        $authors = User::whereHas('roles', function ($role) {
+            $role->where('name', '=', 'author');
+        })->get();
+        $categories = Category::all();
+        $post = Post::findOrFail($id);
+        $data = ['categories' => $categories, 'post' => $post, 'authors' => $authors];
+        return view('admin.post.EditPost', $data);
+    }
+
+    public function update(EditPostRequest $request, $id)
+    {
+        $post = Post::findOrFail($id);
+        $post->update($request->all());
+        if ($imagefile = $request->file('image')) {
+            $name = time() . $imagefile->getClientOriginalName();
+            $imagefile->move('images', $name);
+            $post->image = $name;
+        }
+        $post->user_id = $request->author;
+        $post->category_id = $request->category;
+
+        $post->update();
+        return redirect()->route('admin.posts.index')->with('success', 'Post is saved successfully');
+    }
+
+    public function delete($id)
+    {
+        $post = Post::findOrFail($id);
+        $post->delete();
+        return redirect()->route('admin.posts.index')->with('success', 'Post is Deleted successfully');
+    }
+
+    public function uploadImage(Request $request)
+    {
+
+
+        $file = $request->file('file');
+        $path = url('/uploads/') . '/' . $file->getClientOriginalName();
+        $imgpath = $file->move(public_path('/uploads/') . $file->getClientOriginalName());
+        $fileNameToStore = $path;
+
+
+        return json_encode(array('location' => $fileNameToStore));
+//        $imgpath = $request->file('file')->store('post', 'public');
+//        return response()->json(['location' => "/storage/$imgpath"]);
+
+//        $imgpath = $request->file('file')->store('post', 'public');
+//        return response()->json(['location' => "/storage/$imgpath"]);
+    }
 
 */
 
