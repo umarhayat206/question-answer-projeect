@@ -4,7 +4,15 @@
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
-|https://www.bootdey.com/snippets/view/profile-with-data-and-skills
+|
+run composer require laravel/ui
+Install Vue php artisan ui vue
+if you Install Vue with auth use php artisan ui vue --auth
+add after in page master
+run npm install
+run npm run dev
+
+https://www.bootdey.com/snippets/view/profile-with-data-and-skills
 | Here is where you can register web routes for your application. These
 | routes are loaded by the RouteServiceProvider within a group which
 | contains the "web" middleware group. Now create something great!
