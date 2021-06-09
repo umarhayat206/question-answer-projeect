@@ -281,6 +281,248 @@ https://www.bootdey.com/snippets/view/profile-with-data-and-skills
 //        $imgpath = $request->file('file')->store('post', 'public');
 //        return response()->json(['location' => "/storage/$imgpath"]);
     }
+    
+    // user index tabble
+    
+    @extends('layouts.admin')
+
+@section('content')
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+                @include('layouts._messages')
+
+                <div class="card">
+                    <div class="card-header">All Users
+                        <a href="{{route('admin.users.create')}}"class="btn btn-dark float-right">Add New User</a>
+                        <hr>
+                        <div class="float-right form-group">
+                            <form class="form-inline" action="{{route('users.search')}}">
+                                <input type="text" class="form-control mb-2 mr-sm-2" placeholder="Search By Name, Email" name="search">
+                                {{--                                <input type="text" placeholder="search post" name="search" class="form-control">--}}
+                                <button type="submit" class="btn btn-dark mb-2">Search User</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <table class="table">
+                            <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Roles</th>
+                                <th>Edit</th>
+                                <th>View</th>
+                                <th>Delete</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($users as $user)
+                                <tr>
+                                    <td>{{$user->name}}</td>
+                                    <td>{{$user->email}}</td>
+                                    <td>
+                                        @foreach($user->roles as $role)
+                                            <div>
+                                               {{$role->display_name?$role->display_name:'No Role'}}
+                                            </div>
+                                        @endforeach
+                                    </td>
+                                    <td><a href="{{route('admin.users.edit',$user->id)}}" class="btn btn-outline-secondary">Edit</a></td>
+                                    <td><a href="{{route('admin.users.show',$user->id)}}" target="" class="btn btn-outline-secondary">Show</a></td>
+                                    <td>
+                                        <form method="POST" action="{{route('admin.users.delete',$user->id)}}">
+                                            @method('DELETE')
+                                            @csrf
+                                            <button type="submit" class="btn btn-outline-secondary">Delete</button>
+                                        </form>
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                        {{$users->links('pagination::bootstrap-4')}}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+
+//user edit form
+
+@extends('layouts.admin')
+<style>
+    .checkboxes input{
+        margin: 0 5px 0 30px;
+    }
+</style>
+
+@section('content')
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-12">
+
+                <div class="card">
+                    <div class="card-header">Edit User</div>
+
+                    <div class="card-body">
+                        <form method="POST" action="{{route('admin.users.update',$user->id)}}" >
+                            @csrf
+                            @method('PUT')
+                            <div class="form-group">
+                                <label>Name :</label>
+                                <input type="text" class="form-control {{$errors->has('name')?'is-invalid':''}}" name="name" placeholder="Enter Name" value="{{$user->name}}">
+                                @if($errors->has('name'))
+                                    <div class="invalid-feedback">
+                                        <strong>{{$errors->first('name')}}</strong>
+                                    </div>
+                                @endif
+                            </div>
+
+                            <div class="form-group">
+                                <label>Email :</label>
+                                <input type="Email" class="form-control {{$errors->has('email')?'is-invalid':''}}" name="email" placeholder="Enter Email" value="{{$user->email}}">
+                                @if($errors->has('email'))
+                                    <div class="invalid-feedback">
+                                        <strong>{{$errors->first('email')}}</strong>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="form-group checkboxes">
+                                <label>Select Role :</label>
+{{--                                <select class="form-control" name="role[]" multiple>--}}
+{{--                                    <option value="">Chose Role</option>--}}
+{{--                                    @foreach($roles as $role)--}}
+{{--                                        <option value="{{$role->id}}" {{in_array($role->id,$rolesIds)?'selected':''}}>{{$role->display_name}}</option>--}}
+{{--                                    @endforeach--}}
+
+{{--                                </select>--}}
+                                @foreach($roles as $role)
+                                    <input type="checkbox" value="{{$role->id}}" name="role[]"{{in_array($role->id,$rolesIds)?'checked':''}}> {{$role->display_name }}</input>
+                                @endforeach
+                                @error('role')
+                                <strong><p style="color:#dc3545;font-size: 80%;">{{ $message }}</p></strong>
+                                @enderror
+                            </div>
+                            <div class="form-group">
+                                <label>Password :</label>
+                                <input type="password" class="form-control {{$errors->has('password')?'is-invalid':''}}" name="password" placeholder="Enter Password">
+                                @if($errors->has('password'))
+                                    <div class="invalid-feedback">
+                                        <strong>{{$errors->first('password')}}</strong>
+                                    </div>
+                                @endif
+                            </div>
+                            <div class="form-group">
+                                <label>Confirm Password :</label>
+                                <input type="password" class="form-control {{$errors->has('password_confirmation')?'is-invalid':''}}" name="password_confirmation" placeholder="Confirm Password">
+                                @if($errors->has('password_confirmation'))
+                                    <div class="invalid-feedback">
+                                        <strong>{{$errors->first('password_confirmation')}}</strong>
+                                    </div>
+                                @endif
+                            </div>
+
+
+                            <center><button type="submit" class="btn btn-secondary btn-block">Save</button></center>
+
+
+
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@endsection
+
+
+// show user
+
+@section('content')
+    <div class="col-md-8">
+        @include('layouts._messages')
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-sm-3">
+                        <h6 class="mb-0">Full Name</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                      {{$user->name}}
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <h6 class="mb-0">Email</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{$user->email}}
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <h6 class="mb-0">Roles</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        @foreach($user->roles as $role)
+                            <div>
+                                {{$role->display_name?$role->display_name:'No Role'}}
+                            </div>
+                        @endforeach
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <h6 class="mb-0">Created At</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                     {{$user->created_at->diffForHumans()}}
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <h6 class="mb-0">Updated At</h6>
+                    </div>
+                    <div class="col-sm-9 text-secondary">
+                        {{$user->updated_at->diffForHumans()}}
+                    </div>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <a class="btn btn-info "  href="{{route('admin.users.edit',$user->id)}}">Edit</a>
+                    </div>
+                    <div class="col-sm-9">
+                        <form method="POST" action="{{route('admin.users.delete',$user->id)}}">
+                            @method('DELETE')
+                            @csrf
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    
+    
+    
+ {{--@section('js')--}}
+{{--    <script>--}}
+{{--        $(document).ready( function () {--}}
+{{--            $('#laravel_datatable').DataTable();--}}
+{{--        });--}}
+{{--    </script>--}}
+{{--@stop--}}   
 
 */
 
