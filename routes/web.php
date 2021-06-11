@@ -550,5 +550,15 @@ https://www.bootdey.com/snippets/view/profile-with-data-and-skills
 {{--    </script>--}}
 {{--@stop--}}   
 
+// to connect quasar with laravel
+
+import Vue from 'vue'
+import axios from 'axios'
+axios.defaults.baseURL = 'http://application.local'
+Vue.prototype.$axios = axios
+
+
+
+
 */
 
