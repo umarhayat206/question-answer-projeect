@@ -559,6 +559,13 @@ Vue.prototype.$axios = axios
 
 
 
+// to remove eslintrc
+
+Hi, Things to note:
+
+The starter kit asks you if you want linting or not. So opt out.
+If you opted for ESLint but want to disable it, just edit /quasar.conf.js > build > extendWebpack and remove it:
+
 
 */
 
