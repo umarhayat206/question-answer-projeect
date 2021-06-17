@@ -567,5 +567,10 @@ The starter kit asks you if you want linting or not. So opt out.
 If you opted for ESLint but want to disable it, just edit /quasar.conf.js > build > extendWebpack and remove it:
 
 
+
+
+https://laraveldaily.com/working-with-mysql-json-columns-in-laravel-custom-properties-example/
+
+
 */
 
