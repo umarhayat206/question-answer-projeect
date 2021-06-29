@@ -31,6 +31,7 @@ Route::get('question/{question}/answer/{answer}/delete','AnswerController@destro
 | Web Routes
 |--------------------------------------------------------------------------
 |
+https://www.digitalocean.com/community/tutorials/how-to-create-laravel-eloquent-api-resources-to-convert-models-into-json
 run composer require laravel/ui
 Install Vue php artisan ui vue
 if you Install Vue with auth use php artisan ui vue --auth
