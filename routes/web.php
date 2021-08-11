@@ -39,6 +39,10 @@ add after in page master
 run npm install
 run npm run dev
 
+//google 193329Abcd*
+
+
+
 https://www.bootdey.com/snippets/view/profile-with-data-and-skills
 | Here is where you can register web routes for your application. These
 | routes are loaded by the RouteServiceProvider within a group which
